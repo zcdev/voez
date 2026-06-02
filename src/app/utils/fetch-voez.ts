@@ -8,6 +8,8 @@ export default async function fetchVoez(message: string) {
             body: JSON.stringify({ message }),
         });
 
+        console.log("response", response);
+
         if (!response.ok) {
             throw new Error('Request failed');
         }
