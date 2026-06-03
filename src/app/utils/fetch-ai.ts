@@ -1,4 +1,4 @@
-export default async function fetchAI(message: string) {
+export async function fetchAI(message: string) {
     try {
         const response = await fetch("/api/ai", {
             method: "POST",
