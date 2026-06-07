@@ -6,10 +6,11 @@ type SongProps = {
     song: Song;
     selectedSong: number;
     isPlaying: Boolean;
+    isShowPlayer: Boolean;
     onClick: () => void;
 };
 
-export default function SongItem({ song, selectedSong, isPlaying, onClick }: SongProps) {
+export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, onClick }: SongProps) {
 
     const imageFile = song.name.toLowerCase().replaceAll(' ', '-');
 
@@ -27,7 +28,7 @@ export default function SongItem({ song, selectedSong, isPlaying, onClick }: Son
                 </div>
                 <div>
                     <p>{song.id + 1}. {song.name}</p>
-                    <Player songId={song.id} selectedSong={selectedSong} isPlaying={isPlaying} onClick={onClick} />
+                    <Player songId={song.id} selectedSong={selectedSong} isPlaying={isPlaying} isShowPlayer={isShowPlayer} onClick={onClick} />
                     <p></p>
                 </div>
             </li>

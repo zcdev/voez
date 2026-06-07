@@ -5,10 +5,11 @@ type PlaylistProps = {
     playlist: Song[];
     selectedSong: number;
     isPlaying: Boolean;
+    isShowPlayer: Boolean;
     handlePlay: (songId: number) => void;
 };
 
-export default function SongList({ playlist, selectedSong, isPlaying, handlePlay }: PlaylistProps) {
+export default function SongList({ playlist, selectedSong, isPlaying, isShowPlayer, handlePlay }: PlaylistProps) {
 
     return (
         <section>
@@ -20,6 +21,7 @@ export default function SongList({ playlist, selectedSong, isPlaying, handlePlay
                         song={song}
                         selectedSong={selectedSong}
                         isPlaying={isPlaying}
+                        isShowPlayer={isShowPlayer}
                         onClick={() => handlePlay(song.id)} />
                 ))}
             </ul>

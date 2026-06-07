@@ -9,14 +9,18 @@ import { playlist } from "@/app/lib/data/playlist";
 import SongList from "@/app/components/SongList";
 
 export default function Home() {
-  const [mood, setMood] = useState<string>('');
   const { transcript, isListening, recognitionRef } = useSpeechToText();
   const [selectedSong, setSelectedSong] = useState<number>(1);
+  const [moods, setMoods] = useState<string>('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isShowPlayer, setIsShowPlayer] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const songMoods = playlist[selectedSong].moods.toString().replaceAll(',', ', ').replace(/,(?=[^,]*$)/, ", and") + ".";
 
   function playSong() {
     setIsPlaying(true);
+    setMoods(songMoods);
+    setIsShowPlayer(true);
   }
 
   function pauseSong() {
@@ -27,23 +31,23 @@ export default function Home() {
     console.log("songId", songId);
     console.log("selectedSong", selectedSong);
     setSelectedSong(songId);
-    isPlaying ? playSong() : pauseSong();
+    isPlaying ? pauseSong() : playSong();
   }
 
   async function handleClick() {
     try {
       // Start the voice interaction by greeting the user before listening.
       await fetchVoez(
-        "Hello, welcome to Voez AI. Which song would you like to play?"
+        "Hello" //, welcome to Voez AI. Which song would you like to play?
       );
 
       // First prompt window: wait for the user's song or mood selection.
-      const currentMood = await listenOnce(recognitionRef, 5000);
+      const songChoice = await listenOnce(recognitionRef, 5000);
 
-      if (currentMood.trim() === "") {
+      if (songChoice.trim() === "") {
         // If nothing is heard, offer to pick a song from the user's mood.
         await fetchVoez(
-          "I can pick a song for you. What mood do you prefer?"
+          "I can" //pick a song for you. What mood do you prefer?
         );
 
         // sort out what user said in the transcript
@@ -58,18 +62,20 @@ export default function Home() {
           const data = await fetchAI(messageToAI);
 
           // Store the analyzed mood so the UI and song selection can use it.
-          if (data?.reply?.content) setMood(data.reply.content);
+
           setSelectedSong(prev => 2);
+
+          //if (data?.reply?.content) 
         } else {
           setSelectedSong(prev => 2);
         }
       }
 
       console.log("Finished.");
-      console.log("currentMood", currentMood);
+      console.log("currentMood", songChoice);
 
       await fetchVoez(
-        "Ok, I'll play a song for you."
+        "Ok" // , I'll play a song for you.
       );
 
       // Continue to playback after the voice flow completes.
@@ -83,6 +89,7 @@ export default function Home() {
   console.log("selectedSong", selectedSong);
   console.log("isPlaying", isPlaying);
   console.log("isListening", isListening);
+  console.log("isShowPlayer", isShowPlayer);
 
   useEffect(() => {
     const source =
@@ -100,7 +107,6 @@ export default function Home() {
     };
   }, [selectedSong]);
 
-
   useEffect(() => {
     if (!audioRef.current) return;
 
@@ -113,9 +119,9 @@ export default function Home() {
 
   return (
     <div className="p-10">
-      <p>Status: {isListening ? "🎤 Listening..." : "Idle"}</p>
+      <p>Status: {isListening ? "🎤 listening..." : "idle"}</p>
       <p>Transcription: {transcript}</p>
-      <p>Current Mood: {mood}</p>
+      <p>Current moods: {moods}</p>
       <button onClick={handleClick} className="p-10 font-bold">
         Start
       </button>
@@ -123,6 +129,7 @@ export default function Home() {
         selectedSong={selectedSong}
         playlist={playlist}
         isPlaying={isPlaying}
+        isShowPlayer={isShowPlayer}
         handlePlay={handlePlay} />
     </div>
   );
