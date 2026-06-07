@@ -1,37 +1,39 @@
-export const playlist = [
+import { Song } from "@/app/lib/types/types";
+
+export const playlist: Song[] = [
     {
-        "number": 1, // For the order on the playlist
+        "id": 0, // For the order on the playlist
         "name": "Light Year", // For soundtrack & image
         "moods": ["epic", "empowering", "marvelous"], // Red
     },
     {
-        "number": 2,
+        "id": 1,
         "name": "Raindrops",
         "moods": ["joyful", "happy", "playful"], // Orange
     },
     {
-        "number": 3,
+        "id": 2,
         "name": "Kaleidoscope",
         "moods": ["hopeful", "optimistic", "uplifting"], // Yellow
     },
     {
-        "number": 4,
+        "id": 3,
         "name": "Over the River",
         "moods": ["content", "serene", "peaceful"], // Green
     },
     {
-        "number": 5,
-        "name": "Farewell Symphonys",
+        "id": 4,
+        "name": "Farewell Symphony",
         "moods": ["melancholy", "longing", "sorrowful"], // Blue
     },
     {
-        "number": 6,
+        "id": 5,
         "name": "Passage of Time",
-        "moods": ["reflective, nostalgic, resilient"], // Navy
+        "moods": ["reflective", "nostalgic", "resilient"], // Navy
     },
     {
-        "number": 7,
+        "id": 6,
         "name": "Labyrinth",
         "moods": ["romantic", "dreamy", "enchanting"], // Purple
     },
-];
+] as const;
