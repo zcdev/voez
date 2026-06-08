@@ -8,6 +8,7 @@ import { listenOnce } from "./utils/listen-once";
 import { playlist } from "@/app/lib/data/playlist";
 import { promptAI } from "@/app/lib/data/prompt";
 import SongList from "@/app/components/SongList";
+import Image from "next/image";
 
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
@@ -22,6 +23,7 @@ export default function Home() {
   const [moods, setMoods] = useState<string>('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [isShowPlayer, setIsShowPlayer] = useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const [voez, setVoez] = useState<string>('');
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -42,6 +44,8 @@ export default function Home() {
   }
 
   async function handleClick() {
+    setIsClicked(true);
+
     try {
       // Start the voice interaction by greeting the user before listening.
       await fetchVoez(
@@ -111,14 +115,19 @@ export default function Home() {
   console.log("isShowPlayer", isShowPlayer);
 
   useEffect(() => {
+    const song = playlist[selectedSong];
+
     // Build a readable mood summary for display.
-    const songMoods = playlist[selectedSong].moods.toString().replaceAll(',', ', ').replace(/,(?=[^,]*$)/, ", and") + ".";
+    const songMoods =
+      song.moods.join(", ")
+        .replace(/,(?=[^,]*$)/, ", and")
+        .replace(/^./, char => char.toUpperCase()) + ".";
 
     setMoods(songMoods);
 
     // Generate the audio file path from the selected song name.
     const source =
-      `/songs/${playlist[selectedSong].name
+      `/songs/${song.name
         .toLowerCase()
         .replaceAll(' ', '-')}.mp3`;
 
@@ -148,13 +157,21 @@ export default function Home() {
   }, [isPlaying]);
 
   return (
-    <div className="p-10">
-      <p>Status: {isListening ? "🎤 listening..." : "idle"}</p>
-      <p>Voez: {voez}</p>
-      <p>You: {transcript}</p>
-      <p>Current moods: {isShowPlayer ? moods : ""}</p>
-      <button onClick={handleClick} className="p-10 font-bold">
-        Start
+    <div className="p-10 text-lg mx-auto">
+      <div className="flex mb-6">
+        <div className="w-[165px]">
+          <Image src="/voez-logo-black.svg" width={150} height={150} alt="Voez logo" className="m-auto" />
+        </div>
+        <div className="pl-6">
+          <p>Status: {isListening ? "Listening..." : "Idle"}</p>
+          <p>Voez: {voez}</p>
+          <p>You: {transcript}</p>
+          <p>Current moods: {isPlaying ? moods : ""}</p>
+          <p>Currently playing: {isPlaying ? playlist[selectedSong].name : ""}</p>
+        </div>
+      </div>
+      <button onClick={handleClick} className={`mb-6 px-7 py-4 font-bold text-white bg-black rounded-xl ${isClicked ? "hidden" : ""}`}>
+        Click to start
       </button>
       <SongList
         selectedSong={selectedSong}

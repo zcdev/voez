@@ -13,9 +13,8 @@ export default function SongList({ playlist, selectedSong, isPlaying, isShowPlay
 
     return (
         <section>
-            <ul>
+            <ul className="flex">
                 {playlist.map((song) => (
-
                     <SongItem
                         key={song.id}
                         song={song}
