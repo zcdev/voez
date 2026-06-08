@@ -86,7 +86,7 @@ export default function Home() {
 
           const AIresponse = await fetchAI(messageToAI);
           // Convert the AI response into a playlist song number.
-          const songNumber = Number(AIresponse?.reply?.content.trim());
+          const songNumber = Number(AIresponse?.reply?.trim());
 
           // Store the default or selected song to play.     
           if (isNaN(songNumber)) {
