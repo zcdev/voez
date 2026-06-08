@@ -87,8 +87,13 @@ export default function Home() {
           const AIresponse = await fetchAI(messageToAI);
           // Convert the AI response into a playlist song number.
           const songNumber = Number(AIresponse?.reply?.content.trim());
-          // Store the analyzed mood so the UI and song selection can use it.
-          setSelectedSong(Number(songNumber));
+
+          // Store the default or selected song to play.     
+          if (isNaN(songNumber)) {
+            setSelectedSong(1);
+          } else {
+            setSelectedSong(Number(songNumber));
+          }
 
           console.log("AIresponse", AIresponse);
           console.log("songNumber", songNumber);
@@ -160,7 +165,7 @@ export default function Home() {
     <div className="p-10 text-lg mx-auto">
       <div className="flex mb-6">
         <div className="w-[165px]">
-          <Image src="/voez-logo-black.svg" width={150} height={150} alt="Voez logo" className="m-auto" />
+          <Image src="/voez-logo-black.svg" width={150} height={150} alt="Voez logo" className="m-auto" loading="eager" onClick={() => window.location.reload()} />
         </div>
         <div className="pl-6">
           <p>Status: {isListening ? "Listening..." : "Idle"}</p>
