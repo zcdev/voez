@@ -162,12 +162,13 @@ export default function Home() {
   }, [isPlaying]);
 
   return (
-    <div className="p-10 text-lg mx-auto">
-      <div className="flex mb-6">
-        <div className="w-[165px]">
+    <div className="p-6 md:m-4 md:p-0 lg:p-10 text-lg w-full md:w-auto">
+      <div className="mb-7 flex flex-col md:flex-row">
+        <div className="w-full md:w-[165px]">
           <Image src="/voez-logo-black.svg" width={150} height={150} alt="Voez logo" className="m-auto" loading="eager" onClick={() => window.location.reload()} />
         </div>
-        <div className="pl-6">
+        <div className="pl-0 md:pl-6 pt-6 md:pt-0 text-gray-600 font-normal">
+          <h1 className="font-heading text-2xl font-bold text-black pb-4">Discover an AI-powered interactive music listening experience.</h1>
           <p>Status: {isListening ? "Listening..." : "Idle"}</p>
           <p>Voez: {voez}</p>
           <p>You: {transcript}</p>
@@ -175,15 +176,17 @@ export default function Home() {
           <p>Currently playing: {isPlaying ? playlist[selectedSong].name : ""}</p>
         </div>
       </div>
-      <button onClick={handleClick} className={`mb-6 px-7 py-4 font-bold text-white bg-black rounded-xl ${isClicked ? "hidden" : ""}`}>
-        Click to start
-      </button>
-      <SongList
-        selectedSong={selectedSong}
-        playlist={playlist}
-        isPlaying={isPlaying}
-        isShowPlayer={isShowPlayer}
-        handlePlay={handlePlay} />
+      <div className="justify-items-center md:justify-items-start text-center md:text-left">
+        <button onClick={handleClick} className={`mb-12 px-7 py-4 font-bold text-white bg-black rounded-xl ${isClicked ? "hidden" : ""}`}>
+          Click to start
+        </button>
+        <SongList
+          selectedSong={selectedSong}
+          playlist={playlist}
+          isPlaying={isPlaying}
+          isShowPlayer={isShowPlayer}
+          handlePlay={handlePlay} />
+      </div>
     </div>
   );
 }

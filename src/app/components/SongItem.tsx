@@ -16,7 +16,7 @@ export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, 
 
     return (
         <>
-            <li className="mr-6 rounded-xl shadow-lg">
+            <li className="lg:mr-6 rounded-xl shadow-lg">
                 <div>
                     <Image
                         src={`/images/${imageFile}.png`}
@@ -28,7 +28,7 @@ export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, 
                     />
                 </div>
                 <div className="bg-gray-400 py-2 rounded-b-xl">
-                    <p className="text-sm text-center text-white font-semibold">{song.id + 1}. {song.name}</p>
+                    <p className="text-[14px] text-center text-white font-semibold">{song.id + 1}. {song.name}</p>
                     <Player songId={song.id} selectedSong={selectedSong} isPlaying={isPlaying} isShowPlayer={isShowPlayer} onClick={onClick} />
                     <p></p>
                 </div>
