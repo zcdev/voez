@@ -5,12 +5,14 @@ import { motion } from 'framer-motion';
 type PlaylistProps = {
     playlist: Song[];
     selectedSong: number;
-    isPlaying: Boolean;
-    isShowPlayer: Boolean;
+    isPlaying: boolean;
+    isShowPlayer: boolean;
+    durations: Record<string, number>;
+    currentTime: Record<string, number>;
     handlePlay: (songId: number) => void;
 };
 
-export default function SongList({ playlist, selectedSong, isPlaying, isShowPlayer, handlePlay }: PlaylistProps) {
+export default function SongList({ playlist, selectedSong, isPlaying, isShowPlayer, durations, currentTime, handlePlay }: PlaylistProps) {
 
     return (
         <section>
@@ -32,6 +34,8 @@ export default function SongList({ playlist, selectedSong, isPlaying, isShowPlay
                                 selectedSong={selectedSong}
                                 isPlaying={isPlaying}
                                 isShowPlayer={isShowPlayer}
+                                duration={durations[song.id]}
+                                currentTime={currentTime[song.id]}
                                 onClick={() => handlePlay(song.id)} />
                         </motion.div>
                     ))}

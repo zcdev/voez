@@ -9,18 +9,20 @@ import { playlist } from "@/app/lib/data/playlist";
 import { promptAI } from "@/app/lib/data/prompt";
 import SongList from "@/app/components/SongList";
 import Image from "next/image";
+import { getSongSource } from "./utils/helpers";
 
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
   "I can pick a song for you. What mood do you prefer?",
   "Ok, I'll play a song for you."
 ];
-const testMessage = ["What song?", "What mood?", "Ok"];
 
 export default function Home() {
   const { transcript, isListening, recognitionRef } = useSpeechToText();
   const [selectedSong, setSelectedSong] = useState<number>(1);
   const [moods, setMoods] = useState<string>('');
+  const [durations, setDurations] = useState<Record<string, number>>({});
+  const [currentTime, setCurrentTime] = useState<Record<string, number>>({});
   const [isPlaying, setIsPlaying] = useState(false);
   const [isShowPlayer, setIsShowPlayer] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
@@ -32,15 +34,9 @@ export default function Home() {
     setIsShowPlayer(true);
   }
 
-  function pauseSong() {
-    setIsPlaying(false);
-  }
-
   function handlePlay(songId: number) {
     setSelectedSong(songId);
-    isPlaying
-      ? pauseSong()
-      : playSong();
+    setIsPlaying(prev => !prev);
   }
 
   async function handleClick() {
@@ -49,11 +45,11 @@ export default function Home() {
     try {
       // Start the voice interaction by greeting the user before listening.
       await fetchVoez(
-        testMessage[0]
+        VOEZ_MESSAGES[0]
       );
-      setVoez(testMessage[0]);
+      setVoez(VOEZ_MESSAGES[0]);
       // First prompt window: wait for the user's song or mood selection.
-      const userInput = await listenOnce(recognitionRef, 5000);
+      const userInput = await listenOnce(recognitionRef, 7000);
 
       // Normalize the spoken input into searchable keywords.
       const words = userInput.toLowerCase().split(/\s+/);
@@ -68,17 +64,15 @@ export default function Home() {
       // Select the song immediately when a keyword match is found.
       if (directMatch) {
         setSelectedSong(directMatch.id);
-        console.log("directMatch", directMatch);
-        console.log("selectedSong", selectedSong);
       } else {
         // Fall back to mood-based recommendations when no direct song match exists.
         await fetchVoez(
-          testMessage[1]
+          VOEZ_MESSAGES[1]
         );
-        setVoez(testMessage[1]);
+        setVoez(VOEZ_MESSAGES[1]);
 
         // Second prompt window: collect context for mood analysis.
-        const userMessage = await listenOnce(recognitionRef, 5000);
+        const userMessage = await listenOnce(recognitionRef, 7000);
 
         if (userMessage.trim() !== "") {
           // Send the user's mood description to the AI for song selection.
@@ -94,16 +88,13 @@ export default function Home() {
           } else {
             setSelectedSong(Number(songNumber));
           }
-
-          console.log("AIresponse", AIresponse);
-          console.log("songNumber", songNumber);
         }
       }
       // Confirm the selection before starting playback.
       await fetchVoez(
-        testMessage[2]
+        VOEZ_MESSAGES[2]
       );
-      setVoez(testMessage[2]);
+      setVoez(VOEZ_MESSAGES[2]);
 
       // Continue to playback after the voice flow completes.
       playSong();
@@ -113,53 +104,71 @@ export default function Home() {
     }
   }
 
-  /* Debug use to check state variables */
-  console.log("selectedSong", selectedSong);
-  console.log("isPlaying", isPlaying);
-  console.log("isListening", isListening);
-  console.log("isShowPlayer", isShowPlayer);
-
   useEffect(() => {
-    const song = playlist[selectedSong];
+    const songIndex = playlist[selectedSong];
 
     // Build a readable mood summary for display.
     const songMoods =
-      song.moods.join(", ")
+      songIndex.moods.join(", ")
         .replace(/,(?=[^,]*$)/, ", and")
         .replace(/^./, char => char.toUpperCase()) + ".";
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMoods(songMoods);
 
-    // Generate the audio file path from the selected song name.
-    const source =
-      `/songs/${song.name
-        .toLowerCase()
-        .replaceAll(' ', '-')}.mp3`;
+    // Load the newly selected track.
+    const currentSong = getSongSource(songIndex);
+    audioRef.current = new Audio(currentSong);
+    console.log("Loaded:", currentSong);
+
+    // Set duration for each song
+    playlist.forEach((song) => {
+      console.log(song);
+      if (durations[song.id]) return;
+      const currentFile = getSongSource(song);
+      const audio = new Audio(currentFile);
+
+      audio.addEventListener("canplaythrough", () => {
+        setDurations((prev) => ({
+          ...prev,
+          [song.id]: audio.duration,
+        }));
+      });
+    });
+
+  }, [selectedSong, durations]);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
 
     // Stop any currently loaded audio before switching tracks.
-    audioRef.current?.pause();
+    audio.pause();
 
-    // Load the newly selected track.
-    audioRef.current = new Audio(source);
+    // Keep audio playback synchronized with the isPlaying state.
+    if (isPlaying) {
+      audio.play().catch(console.error);
+    } else {
+      audio.pause();
+    }
 
-    console.log("Loaded:", source);
+    // Set currentTime for the selected song
+    const handleTimeUpdate = () => {
+      setCurrentTime(prev => ({
+        ...prev,
+        [selectedSong]: audio.currentTime,
+      }));
+    };
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
 
     // Stop playback when the selected song changes or the component unmounts.
     return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
       audioRef.current?.pause();
     };
 
-  }, [selectedSong]);
-
-  useEffect(() => {
-    if (!audioRef.current) return;
-
-    // Keep audio playback synchronized with the isPlaying state.
-    isPlaying
-      ? audioRef.current.play().catch(console.error)
-      : audioRef.current.pause();
-
-  }, [isPlaying]);
+  }, [isPlaying, selectedSong]);
 
   return (
     <div className="p-6 md:m-4 md:p-0 lg:p-10 text-lg w-full md:w-auto">
@@ -185,6 +194,8 @@ export default function Home() {
           playlist={playlist}
           isPlaying={isPlaying}
           isShowPlayer={isShowPlayer}
+          durations={durations}
+          currentTime={currentTime}
           handlePlay={handlePlay} />
       </div>
     </div>
