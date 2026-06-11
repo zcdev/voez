@@ -57,8 +57,9 @@ export default function Home() {
 
       // Try to match the user's words to a song keyword.
       const directMatch = playlist.find(song =>
-        song.keywords.some(keyword =>
-          words.includes(keyword)
+        words.some(word =>
+          song.name.toLowerCase().includes(word) ||
+          song.keywords.includes(word)
         )
       );
 
