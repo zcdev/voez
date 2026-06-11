@@ -10,6 +10,7 @@ import { promptAI } from "@/app/lib/data/prompt";
 import SongList from "@/app/components/SongList";
 import Image from "next/image";
 import { getSongSource } from "./utils/helpers";
+import Link from "next/link";
 
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
@@ -172,7 +173,7 @@ export default function Home() {
 
   return (
     <div className="p-6 md:m-4 md:p-0 lg:p-10 text-lg w-full md:w-auto">
-      <div className="mb-7 flex flex-col md:flex-row">
+      <header className="mb-7 flex flex-col md:flex-row">
         <div className="w-full md:w-[165px]">
           <Image src="/voez-logo-black.svg" width={150} height={150} alt="Voez logo" className="m-auto" loading="eager" onClick={() => window.location.reload()} />
         </div>
@@ -184,8 +185,8 @@ export default function Home() {
           <p>Current moods: {isPlaying ? moods : ""}</p>
           <p>Currently playing: {isPlaying ? playlist[selectedSong].name : ""}</p>
         </div>
-      </div>
-      <div className="justify-items-center md:justify-items-start text-center md:text-left">
+      </header>
+      <main className="justify-items-center md:justify-items-start text-center md:text-left">
         <button onClick={handleClick} className={`mb-12 px-7 py-4 font-bold text-white bg-black rounded-xl ${isClicked ? "hidden" : ""}`}>
           Click to start
         </button>
@@ -197,7 +198,14 @@ export default function Home() {
           durations={durations}
           currentTime={currentTime}
           handlePlay={handlePlay} />
-      </div>
+      </main>
+      <footer className="text-sm">
+        <p className="pt-40">Please do not submit confidential or sensitive information to AI tools without appropriate authorization.
+        </p>
+        <p className="pt-4">
+          © {new Date().getFullYear()} Voez AI
+        </p>
+      </footer>
     </div>
   );
 }

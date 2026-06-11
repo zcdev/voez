@@ -7,7 +7,7 @@ const redis = Redis.fromEnv();
 
 const ratelimit = new Ratelimit({
     redis,
-    limiter: Ratelimit.slidingWindow(1, "5 m"),
+    limiter: Ratelimit.slidingWindow(3, "5 m"),
 });
 
 export async function POST(req: NextRequest) {
