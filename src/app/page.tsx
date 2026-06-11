@@ -14,7 +14,7 @@ import { getSongSource } from "./utils/helpers";
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
   "I can pick a song for you. What mood do you prefer?",
-  "Ok, I'll play a song for you."
+  "Ok, the song is playing now."
 ];
 
 export default function Home() {

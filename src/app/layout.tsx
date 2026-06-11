@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Quicksand } from "next/font/google";
+import { Manrope } from "next/font/google";
 import "./globals.css";
 
 const manrope = Manrope({

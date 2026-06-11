@@ -9,8 +9,6 @@ export async function fetchVoez(message: string) {
             body: JSON.stringify({ message }),
         });
 
-        // console.log("response", response);
-
         if (!response.ok) {
             throw new Error('Request failed');
         }
@@ -29,5 +27,6 @@ export async function fetchVoez(message: string) {
 
     } catch (error) {
         // Log any TTS request or playback errors
+        console.error(error);
     }
 }
