@@ -21,8 +21,8 @@ export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, 
 
     return (
         <>
-            <li className="lg:mr-6 rounded-xl shadow-lg">
-                <div>
+            <li className="w-[165px] rounded-xl shadow-lg">
+                <div className="w-[165px]">
                     <Image
                         src={`/images/${imageFile}.png`}
                         width={165}
@@ -32,7 +32,7 @@ export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, 
                         className="rounded-t-xl"
                     />
                 </div>
-                <div className="bg-gray-400 pl-[10px] pr-2 py-2 rounded-b-xl text-white text-left">
+                <div className="w-[165px] bg-gray-400 pl-[8px] pr-2 py-2 rounded-b-xl text-white text-left">
                     <p className="text-sm font-semibold">{song.id + 1}. {song.name}</p>
                     <p className="text-xs">{progress}/{songLength}</p>
                     <Player songId={song.id} selectedSong={selectedSong} isPlaying={isPlaying} isShowPlayer={isShowPlayer} onClick={onClick} />

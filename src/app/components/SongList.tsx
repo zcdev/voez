@@ -15,10 +15,10 @@ type PlaylistProps = {
 export default function SongList({ playlist, selectedSong, isPlaying, isShowPlayer, durations, currentTime, handlePlay }: PlaylistProps) {
 
     return (
-        <section>
+        <section className="max-w-7xl">
             <ul>
                 <motion.div
-                    className="grid gap-6 lg:gap-2 grid-cols-[165px] md:grid-cols-4 lg:grid-cols-7"
+                    className="grid gap-6 grid-cols-[165px] md:grid-cols-4 lg:grid-cols-7"
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
@@ -28,7 +28,7 @@ export default function SongList({ playlist, selectedSong, isPlaying, isShowPlay
                     }}
                 >
                     {playlist.map((song) => (
-                        <motion.div key={song.id} variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }}>
+                        <motion.div key={song.id} variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0 } }} className="w-[165px]">
                             <SongItem
                                 song={song}
                                 selectedSong={selectedSong}
