@@ -187,7 +187,7 @@ export default function Home() {
           <p>Currently playing: {isPlaying ? playlist[selectedSong].name : ""}</p>
         </div>
       </header>
-      <main className="justify-items-center md:justify-items-start text-center md:text-left">
+      <main className="flex flex-col items-center md:items-start text-center md:text-left">
         <button onClick={handleClick} className={`mb-12 px-7 py-4 font-bold text-white bg-black rounded-xl ${isClicked ? "hidden" : ""}`}>
           Click to start
         </button>
@@ -201,7 +201,13 @@ export default function Home() {
           handlePlay={handlePlay} />
       </main>
       <footer className="text-sm">
-        <p className="pt-40">Please do not submit confidential or sensitive information to AI tools without appropriate authorization.
+        <p className="pt-40">
+          Voez AI is an experimental project. For the best experience, please use the latest version of Google Chrome. Other browsers have not been fully tested and some features may not be supported.
+        </p>
+        <p className="pt-4">
+          To use voice features, please ensure that your microphone and speakers are enabled and that your browser has permission to access your microphone.
+        </p>
+        <p className="pt-4">Please do not submit confidential or sensitive information to AI tools without appropriate authorization.
         </p>
         <p className="pt-4">
           © {new Date().getFullYear()} Voez AI
