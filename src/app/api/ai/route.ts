@@ -20,12 +20,12 @@ export async function POST(req: NextRequest) {
         const { success, remaining, limit, reset } =
             await ratelimit.limit(ip);
 
-        console.log({
+        /*  console.log({
             success,
             remaining,
             limit,
             reset,
-        });
+        }); */
 
         if (!success) {
             return NextResponse.json(

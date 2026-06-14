@@ -10,7 +10,6 @@ import { promptAI } from "@/app/lib/data/prompt";
 import SongList from "@/app/components/SongList";
 import Image from "next/image";
 import { getSongSource } from "./utils/helpers";
-import Link from "next/link";
 
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
@@ -121,11 +120,9 @@ export default function Home() {
     // Load the newly selected track.
     const currentSong = getSongSource(songIndex);
     audioRef.current = new Audio(currentSong);
-    console.log("Loaded:", currentSong);
 
     // Set duration for each song
     playlist.forEach((song) => {
-      console.log(song);
       if (durations[song.id]) return;
       const currentFile = getSongSource(song);
       const audio = new Audio(currentFile);

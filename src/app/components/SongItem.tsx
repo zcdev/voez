@@ -29,6 +29,7 @@ export default function SongItem({ song, selectedSong, isPlaying, isShowPlayer, 
                         height={165}
                         alt={song.name}
                         loading="eager"
+                        fetchPriority="high"
                         className="rounded-t-xl"
                     />
                 </div>
