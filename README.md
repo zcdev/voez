@@ -90,7 +90,14 @@ Redis-backed rate limiting helps prevent abuse, excessive requests, and accident
 
 Voez AI is an experimental voice-first application and is currently optimized for the latest version of Google Chrome.
 
-Support for other browsers has not been fully validated and some features may not function as expected due to differences in speech recognition, audio capture, real-time streaming, and autoplay behavior. For the best experience, ensure your microphone and speakers are enabled.
+Apple Safari is supported but requires these setups:
+
+* Enable Siri/Dictation on the device.
+* Allow microphone access in Safari.
+* Grant microphone permission when prompted.
+* Refresh the page after changing permissions.
+
+Support for other browsers has not been fully validated, and some features may not function as expected. Please ensure your microphone and speakers are enabled with proper settings for Google Chrome and Apple Safari.
 
 ## Tech Stack
 
