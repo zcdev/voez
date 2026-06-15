@@ -9,7 +9,7 @@ import { playlist } from "@/app/lib/data/playlist";
 import { promptAI } from "@/app/lib/data/prompt";
 import SongList from "@/app/components/SongList";
 import Image from "next/image";
-import { getSongSource } from "./utils/helpers";
+import { getSongSource, getRandomSong } from "./utils/helpers";
 
 const VOEZ_MESSAGES = [
   "Hello, welcome to Voez AI. Which song would you like to play?",
@@ -17,9 +17,11 @@ const VOEZ_MESSAGES = [
   "Ok, the song is playing now."
 ];
 
+const randomSong = getRandomSong();
+
 export default function Home() {
   const { transcript, isListening, recognitionRef } = useSpeechToText();
-  const [selectedSong, setSelectedSong] = useState<number>(1);
+  const [selectedSong, setSelectedSong] = useState<number>(randomSong);
   const [moods, setMoods] = useState<string>('');
   const [durations, setDurations] = useState<Record<string, number>>({});
   const [currentTime, setCurrentTime] = useState<Record<string, number>>({});
@@ -54,9 +56,9 @@ export default function Home() {
       // Normalize the spoken input into searchable keywords.
       const words = userInput.toLowerCase().split(/\s+/);
 
-      // Try to match the user's words to a song keyword.
+      // Try to match the user's words to a song name or keyword.
       const directMatch = playlist.find(song =>
-        words.some(word =>
+        words.find(word =>
           song.name.toLowerCase().includes(word) ||
           song.keywords.includes(word)
         )
@@ -83,11 +85,9 @@ export default function Home() {
           // Convert the AI response into a playlist song number.
           const songNumber = Number(AIresponse?.reply?.trim());
 
-          // Store the default or selected song to play.     
-          if (isNaN(songNumber)) {
-            setSelectedSong(1);
-          } else {
-            setSelectedSong(Number(songNumber));
+          // If AI didn't respond with a valid number, play a random song     
+          if (isNaN(songNumber) === false) {
+            setSelectedSong(songNumber);
           }
         }
       }
@@ -97,7 +97,7 @@ export default function Home() {
       );
       setVoez(VOEZ_MESSAGES[2]);
 
-      // Continue to playback after the voice flow completes.
+      // Otherwise, play the song by the user's choice
       playSong();
 
     } catch (error) {
@@ -161,10 +161,10 @@ export default function Home() {
 
     audio.addEventListener("timeupdate", handleTimeUpdate);
 
-    // Stop playback when the selected song changes or the component unmounts.
+    // Stop playback when the selected song changes or the component unmounts and clean up.
     return () => {
-      audio.removeEventListener("timeupdate", handleTimeUpdate);
       audioRef.current?.pause();
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
     };
 
   }, [isPlaying, selectedSong]);
